@@ -1,0 +1,10 @@
+02/04/2025
+
+-J'ai regler les erreurs de mon code, comme les erreurs d'implementations de mes fichiers (include les bon fichiers aux bons endroits) 
+-Reussi a faire la motier de la premiere question classe pile, méthode vide, methode empiler.
+-Je travaille actuellement sur la methode Depiler.
+
+09/04/2025
+
+-j ai regler mon probleme de coredumped dans ma methode Depiler elle est maintennat fonctionnelle.
+-je suis sur la deuxieme partie de la premiere question je regle certaine chose je pense que l'alogorithme est bon mais j ai petits probleme je vais tester avant la fin de la seance.
