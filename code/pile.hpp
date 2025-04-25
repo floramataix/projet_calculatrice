@@ -14,6 +14,7 @@ class Pile {
         string Depiler();
         bool Vide();
         string Evaluer(string *, int );
+        int Prioritee(string);
         string Transform(string *, int );
         ~Pile();
 };

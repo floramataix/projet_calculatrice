@@ -81,28 +81,45 @@ string Pile::Evaluer(string expr[], int taille) {
     return Depiler();
 } 
 
+int Pile::Prioritee(string expr) {
+    //prioritée de l'operateur :
+    int priorite = 0;
+    if (expr == "+" || expr == "-" ){
+        priorite = 1;
+    }
+    if (expr == "*" || expr == "/"){
+        priorite = 2;
+    }
+    return priorite;
+}
+
+
+
 string Pile::Transform(string expr[], int taille) {
     Pile * operateurs = new Pile();
     string sortie ;
 
     for (int i = 0; i < taille; i++ ){
-        //prioritée de l'operateur :
-        int priorite = 0;
-        if (expr[i] == "+" || expr[i] == "-" ){
-            priorite = 1;
-        }
-        if (expr[i] == "*" || expr[i] == "/"){
-            priorite = 2;
-        }
-        
         //algorithme de shunting yard 
-        if (priorite == 1 ) {
-            string a = Depiler();
-            if ((a == "*" || a == "/")){
+        
+        string a = Depiler();
+        
+        if ( Prioritee(expr[i]) == 1 && !Vide()) {
+            while (a != "(" && !Vide() ){
                 sortie = sortie + Depiler();
+                a = Depiler();
             }
-            else {
-                Empiler(expr[i]);
+        }
+
+        else if (Prioritee(expr[i]) == 2){
+            if (a != "(" && !Vide() ){
+                if (Prioritee(a) == 2) {
+                    while (Prioritee(a) != 1 && a != "(") {
+                        sortie = sortie + a;
+                        a = Depiler();
+                    }
+                }
+                operateurs->Empiler(expr[i]);
             }
         }
 
