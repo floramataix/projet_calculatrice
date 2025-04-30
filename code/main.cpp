@@ -4,11 +4,11 @@ using namespace std;
 
 int main() {
 
-    
+    /*
     Pile * pile1 = new Pile();
     string Tab[5] = {"1","2","3","4","5"};
     Pile * pile2 = new Pile(Tab,5); 
-    /*
+    
     cout<< "La pile1 est elle vide ?  " << pile1->Vide()<< endl;
     cout<< "La pile2 est elle vide ?  " << pile2->Vide()<< endl;
 
@@ -25,7 +25,12 @@ int main() {
     Pile *resultat = new Pile();
     string expr[5] = {"1","3","+"};
     cout << resultat->Evaluer(expr, 3) << endl;
-   */
-  
+  */
 
+    string expression[10] = {"(", "5", "*", "4", "+", "3", "*", ")", "-", "1" };
+
+    
+    cout << Transform(expression,10) <<endl;
+
+ 
 }

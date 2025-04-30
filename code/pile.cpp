@@ -16,8 +16,23 @@ Pile::Pile(string T[], int taille){
     L = new Liste(T,taille);
 }
 
+bool Pile::Vide() {
+    if (L == nullptr || L->tete == nullptr ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
 void Pile::Afficher_pile(){
-    L->Afficher();
+    if (!Vide()) {
+        L->Afficher();
+    }
+    else {
+        cout << "La pile est vidEEE "<<endl;
+    }
 }
 
 
@@ -29,24 +44,20 @@ string Pile::Empiler(string val) {
     return L->tete->info;
 }
 
-bool Pile::Vide() {
-    if (L == nullptr || L->tete == nullptr ) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+
 
 string Pile::Depiler() {
     if (Vide()) {
         cout << "Attention : la pile est vide " << endl;
-        return 0;
+        return "none";
     }
-    string val = L->tete->info;
-    Maillon* tmp = L->tete;
-    L->tete = L->tete->suiv;
-    return val;
+    else {
+        string val = L->tete->info;
+        Maillon* tmp = L->tete;
+        L->tete = L->tete->suiv;
+        return val;
+
+    }
 }
 
 string Pile::Evaluer(string expr[], int taille) {
@@ -81,43 +92,46 @@ string Pile::Evaluer(string expr[], int taille) {
     return Depiler();
 } 
 
-int Pile::Prioritee(string expr) {
+int Prioritee(string expr) {
     //prioritée de l'operateur :
     int priorite = 0;
     if (expr == "+" || expr == "-" ){
         priorite = 1;
     }
-    if (expr == "*" || expr == "/"){
+    else if (expr == "*" || expr == "/"){
         priorite = 2;
     }
+    else {
+        priorite = 0;
+    } 
     return priorite;
 }
 
 
 
-string Pile::Transform(string expr[], int taille) {
+string Transform(string expr[], int taille) {
     Pile * operateurs = new Pile();
     string sortie ;
 
+
     for (int i = 0; i < taille; i++ ){
         //algorithme de shunting yard 
-        
-        string a = Depiler();
-        
-        if ( Prioritee(expr[i]) == 1 && !Vide()) {
-            while (a != "(" && !Vide() ){
-                sortie = sortie + Depiler();
-                a = Depiler();
+                
+        if ( Prioritee(expr[i]) == 1 && !operateurs->Vide()) {
+            string a = operateurs->Depiler();
+            while (a != "(" && !operateurs->Vide() ){
+                sortie = sortie + operateurs->Depiler();
+                a = operateurs->Depiler(); 
             }
         }
 
         else if (Prioritee(expr[i]) == 2){
-            if (a != "(" && !Vide() ){
+            string a = operateurs->Depiler();
+            if (a != "(" &&  a != ")" && !operateurs ->Vide() ){
                 if (Prioritee(a) == 2) {
-                    while (Prioritee(a) != 1 && a != "(") {
+                    while (Prioritee(a) != 1 && a != "(" && a != ")") {
                         sortie = sortie + a;
-                        a = Depiler();
-                    }
+                        a = operateurs->Depiler();}
                 }
                 operateurs->Empiler(expr[i]);
             }
@@ -130,19 +144,27 @@ string Pile::Transform(string expr[], int taille) {
         else if (expr[i] == ")"){
 
             while (!operateurs->Vide() && operateurs->L->tete->info != "(") {
-                sortie = sortie + Empiler(operateurs->Depiler());
+                sortie = sortie + operateurs->Depiler();
             }
-            if (!operateurs->Vide() && operateurs->L->tete->info == "(") {
-                operateurs->Depiler(); // Retirer la parenthèse gauche
+            if (!operateurs->Vide() && (operateurs->L->tete->info == "(" || operateurs->L->tete->info == ")")) {
+                operateurs->Depiler(); // Retirer les parenthèses
             }
         }
         else {  //si c'est un operande
-            sortie = sortie + Empiler(expr[i]);
+            sortie = sortie + expr[i];
         }
+        
+        //debug
+        cout << "i qui est étudier actuellement" << expr[i] << endl;
+        cout << "La sortie actuellement" << sortie <<endl;
+        cout <<"La pile operateur actuellement";
+        operateurs->Afficher_pile();
+        cout << "-------------------" <<endl;
     }
     while (!operateurs->Vide()) {
-        sortie = sortie + Depiler();
+        sortie = sortie + operateurs->Depiler();
     }
+    
     return sortie;
 }
 
