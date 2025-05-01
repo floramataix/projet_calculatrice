@@ -5,7 +5,6 @@
 class Pile {
     friend class Liste;
     friend class Maillon;
-    friend string Transform(string expr[], int taille);
     private :
         
         Liste* L ;
@@ -13,7 +12,7 @@ class Pile {
         Pile();
         Pile(Liste *);
         Pile(string T[], int taille);
-    
+        string getInfo(); 
         void Afficher_pile();
         string Empiler(string val);
         string Depiler();

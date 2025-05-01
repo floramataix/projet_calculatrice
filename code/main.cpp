@@ -25,12 +25,21 @@ int main() {
     Pile *resultat = new Pile();
     string expr[5] = {"1","3","+"};
     cout << resultat->Evaluer(expr, 3) << endl;
-  */
+    string expression2[12] = {"3", "+", "4", "*", "(", "2", "-", "1", "*", "6", "+", "8" };
+    cout << Transform(expression2,12) <<endl;
+    cout << "Le resultat est sensé etre : 3421-*6*+8" <<endl;
+  
+    */
+  string expression3[15] = {"3", "+", "5", "*", "(", "2", "-", "3", "+", "2", "*", "4", ")", "-", "9" };
+  cout << Transform(expression3,15) <<endl;
+  cout << "Le resultat est sensé etre : 523-24*+*+9-" <<endl;
+  
+  
+  string expression[10] = {"(", "5", "*", "4", "+", "3", "*", ")", "-", "1" };
+  cout << Transform(expression,10) <<endl;
+  cout << "Le resultat est sensé etre : 54*3*+1- " <<endl;
+  
+  
+  
 
-    string expression[10] = {"(", "5", "*", "4", "+", "3", "*", ")", "-", "1" };
-
-    
-    cout << Transform(expression,10) <<endl;
-
- 
 }

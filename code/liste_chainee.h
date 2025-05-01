@@ -7,7 +7,6 @@ using namespace std;
 class Maillon { 
     friend class Liste;
     friend class Pile;
-	friend string Transform(string expr[], int taille);
     
 	string info;
 	Maillon * suiv;  
@@ -24,7 +23,6 @@ class Maillon {
 class Liste {
 	private : 
         friend class Pile;
-		friend string Transform(string expr[], int taille);
 		Maillon *tete;
 
 	public :
