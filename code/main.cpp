@@ -1,5 +1,7 @@
 #include <iostream> 
-#include "pile.hpp"
+#include "pile_int.hpp"
+#include "pile_str.hpp"
+#include "pile_arbre.hpp"
 using namespace std;
 
 int main() {
@@ -29,7 +31,7 @@ int main() {
     cout << Transform(expression2,12) <<endl;
     cout << "Le resultat est sensé etre : 3421-*6*+8" <<endl;
   
-    */
+    
   string expression3[15] = {"3", "+", "5", "*", "(", "2", "-", "3", "+", "2", "*", "4", ")", "-", "9" };
   cout << Transform(expression3,15) <<endl;
   cout << "Le resultat est sensé etre : 523-24*+*+9-" <<endl;
@@ -38,8 +40,13 @@ int main() {
   string expression[10] = {"(", "5", "*", "4", "+", "3", "*", ")", "-", "1" };
   cout << Transform(expression,10) <<endl;
   cout << "Le resultat est sensé etre : 54*3*+1- " <<endl;
-  
-  
-  
+ 
 
+ string expression[11] = {"a", "+", "(", "(", "b", "*", "4", ")", "/", "3", ")"};
+ cout << Transform(expression, 11) << endl;
+
+ */
+ 
 }
+
+
