@@ -150,14 +150,13 @@ int PileInt::EmPileInt(int val) {
 int PileInt::DePileInt() {
   if (Vide()) {
       cout << "Attention : la pile est vide " << endl;
-      return ;
+      return 0;
   }
   else {
       int val = L->tete->info;
       MaillonInt* tmp = L->tete;
       L->tete = L->tete->suiv;
       return val;
-
   }
 }
 

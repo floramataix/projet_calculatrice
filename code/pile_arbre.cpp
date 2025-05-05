@@ -1,4 +1,5 @@
 #include <iostream> 
+#include <string>
 #include "pile_arbre.hpp"
 using namespace std;
 
@@ -45,7 +46,7 @@ ListeNoeud::ListeNoeud(Noeud * T[], int taille)
 }
 
 
-void ListeNoeud::Afficher()
+void ListeNoeud::Afficher_listenoeud()
 {
     MaillonNoeud * tmp;
     tmp = tete;
@@ -75,13 +76,18 @@ void ListeNoeud::InsererEnTete(Noeud * val) {
 }
 
 void ListeNoeud::SupprimerEnTete() {
-  if (tete == nullptr) {
-      return;
-  }
-  MaillonNoeud* tmp = tete;
-  tete = tete->suiv;
-  cout << "etat de la tête après supprimer en tete" << tete->info << endl;
-  cout << "etat de la tête après supprimer en tete" << tete->info << endl;
+    if (tete == nullptr) {
+        return;
+    }
+    MaillonNoeud* tmp = tete;
+    tete = tete->suiv;
+    delete tmp; // Libère la mémoire
+    if (tete != nullptr) {
+        cout << "Nouvelle tête : " << tete->info << endl;
+    } 
+    else {
+        cout << "La liste est maintenant vide." << endl;
+    }
 }
 
 ListeNoeud::~ListeNoeud()
@@ -111,10 +117,12 @@ PileNoeud::PileNoeud(Noeud * T[], int taille){
 }
 
 Noeud * PileNoeud::getInfo() {
+    if (L == nullptr || L->tete == nullptr) {
+        return nullptr; }
     return L->tete->info;
 }
 
-bool PileNoeud::Vide() {
+bool PileNoeud::VideArbre() {
     if (L == nullptr || L->tete == nullptr ) {
         return true;
     }
@@ -127,9 +135,9 @@ PileNoeud::~PileNoeud()
 {
 }
 
-void PileNoeud::Afficher_pile(){
-    if (!Vide()) {
-        L->Afficher();
+void PileNoeud::Afficher_noeud(){
+    if (!VideArbre()) {
+        L->Afficher_listenoeud();
     }
     else {
         cout << "La pile est vide "<<endl;
@@ -145,15 +153,15 @@ Noeud * PileNoeud::EmPilerNoeud(Noeud * val) {
 }
 
 Noeud * PileNoeud::DePilerNoeud() {
-    if (Vide()) {
+    if (VideArbre()) {
         cout << "Attention : la pile est vide " << endl;
         return nullptr; // Retourne nullptr au lieu de "none"
     }
     else {
         Noeud * val = L->tete->info;
-        Noeud* tmp = L->tete->info;
+        MaillonNoeud* tmp = L->tete;
         L->tete = L->tete->suiv;
-        delete tmp; // Libère la mémoire
+        delete tmp; // Libère uniquement le maillon
         return val;
     }
 }
@@ -161,7 +169,7 @@ Noeud * PileNoeud::DePilerNoeud() {
 Noeud::Noeud(double v){
     char type = 'f'; //‘f’ pour valeur.
     char ope = 0;
-    double val = v;    // valeur si type == 'f'
+    double val = v;    // valeur si type == "f"
     Noeud * fg = nullptr;
     Noeud * fd = nullptr;
 
@@ -187,6 +195,28 @@ Noeud::~Noeud() {
 Arbre::Arbre() {
     racine = nullptr;
 }
+
+Arbre::Arbre(string expr[], int taille){
+    PileNoeud * P = new PileNoeud();
+    for (int i = 0; i < taille; i++ ){
+        if (expr[i] == "+" || expr[i] == "-" || expr[i] == "*" || expr[i] == "/" ) {
+            if (!P->VideArbre()) {
+                Noeud* droite = P->DePilerNoeud();
+                Noeud* gauche = P->DePilerNoeud();
+                Noeud* opNode = new Noeud(expr[i][0], gauche, droite);
+                P->EmPilerNoeud(opNode);
+            }
+        }
+        else { 
+            Noeud* n = new Noeud(stod(expr[i]));
+            P->EmPilerNoeud(n);
+
+
+
+        }
+    }
+}
+
 
 Arbre::~Arbre() {
     if (this->racine != NULL) {

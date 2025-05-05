@@ -6,6 +6,8 @@ using namespace std;
 // Je ne savais pas si c'etais autoriser d'utiliser template pour adapter ma classe PileNoeud a n'importe quel type.
 // J'ai donc creer une nouvelle PileNoeud qui cette fois ci ne prend pas des Noeud * mais des pointeurs vers des noeuds.
 
+class Noeud;// on initialise les noeud de l'arbre.
+
 class MaillonNoeud {
     friend class ListeNoeud;
     friend class PileNoeud;
@@ -29,7 +31,7 @@ class ListeNoeud {
         ListeNoeud();
         ListeNoeud(Noeud * T[], int );
         MaillonNoeud * NouveauMaillon(Noeud * , MaillonNoeud * );
-        void Afficher();
+        void Afficher_listenoeud();
         void InsererEnTete(Noeud * );
         void SupprimerEnTete();
         ~ListeNoeud();
@@ -46,10 +48,10 @@ class PileNoeud {
         PileNoeud(ListeNoeud *);
         PileNoeud(Noeud * T[], int taille);
         Noeud * getInfo(); 
-        void Afficher_pile();
+        void Afficher_noeud();
         Noeud * EmPilerNoeud(Noeud * val);
         Noeud * DePilerNoeud(); 
-        bool Vide();
+        bool VideArbre();
         Noeud * Evaluer(Noeud * expr[], int );
         ~PileNoeud();
 };
@@ -58,13 +60,14 @@ class PileNoeud {
 
 class Noeud {
     private :
+        friend class Arbre;
         char type ; //‘o’ pour opérateur et ‘f’ pour valeur.
         char ope ;// opérateur (+, -, *, /) si type == 'o'
         double val;    // valeur si type == 'f'
         Noeud * fg, * fd ;
     public : 
         Noeud(double v);
-        Noeud(char op, Noeud* g, Noeud* d);
+        Noeud(char op, Noeud* d, Noeud* g);
         ~Noeud();
         friend class Arbre; 
 
@@ -72,12 +75,12 @@ class Noeud {
 
 class Arbre {
     private : 
+        friend class Noeud;
         Noeud *racine;
     public :
         Arbre();
-        Arbre(const Noeud *& expr_suffixee);
-        
+        Arbre(string expr[],int taille);
         ~Arbre();
 };
 
-#endif;
+#endif
