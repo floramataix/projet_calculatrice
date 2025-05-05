@@ -1,6 +1,7 @@
 #include <iostream> 
 #include <string>
 #include "pile_arbre.hpp"
+#include "pile_str.hpp"
 using namespace std;
 
 ListeNoeud::ListeNoeud()
@@ -210,10 +211,10 @@ Arbre::Arbre(string expr[], int taille){
         else { 
             Noeud* n = new Noeud(stod(expr[i]));
             P->EmPilerNoeud(n);
-
-
-
         }
+    }
+    if (!P->VideArbre()) {
+        racine = P->DePilerNoeud();
     }
 }
 

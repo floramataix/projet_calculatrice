@@ -27,7 +27,6 @@ class ListeStr {
         ListeStr();
         ListeStr(string T[], int );
         ListeStr(int , string T[]);
-        MaillonStr * NouveauMaillon(string , MaillonStr * );
         void Afficher();
         void InsererEnTete(string );
         void SupprimerEnTete();
@@ -56,6 +55,6 @@ class PileStr {
 };
 
     int Prioritee(string);
-    string Transform(string expr[], int );
+    string* Transform(string expr[], int );
 
 #endif

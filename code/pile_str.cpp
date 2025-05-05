@@ -169,7 +169,6 @@ string PileStr::Evaluer(string expr[], int taille) {
             double a = stod(DePilerStr());
             double b = stod(DePilerStr());
             EmPilerStr(to_string(a+b));
-            
         }
         else if (expr[i] == "-"){
             double a = stod(DePilerStr());
@@ -207,16 +206,17 @@ int Prioritee(string expr) {
     return 0;
 }
 
-string Transform(string expr[], int taille) {
+string* Transform(string expr[], int taille) {
     PileStr * operateurs = new PileStr();
-    string sortie ;
+    string* sortie = new string[taille];    //la taille ne sera pas la meme mais ca nous derange pas car elle sera plus petite que l'autre.
+    int j = 0;
 
     for (int i = 0; i < taille; i++ ){
         //algorithme de shunting yard.
 
         if (Prioritee(expr[i]) == 1 || Prioritee(expr[i]) == 2) {
             while (!operateurs->Vide() && Prioritee(expr[i]) <= Prioritee(operateurs->getInfo())) {
-                sortie += operateurs->DePilerStr();
+                sortie[j++] = operateurs->DePilerStr();// j+++ pour se deplacer dans
             }
             operateurs->EmPilerStr(expr[i]);
         }
@@ -228,7 +228,7 @@ string Transform(string expr[], int taille) {
 
         else if (expr[i] == ")"){ //si c'est une parenthese fermante.
             while (!operateurs->Vide() && operateurs->getInfo() != "(") {
-                sortie += operateurs->DePilerStr();
+                sortie[j++] = operateurs->DePilerStr();
             }
             if (!operateurs->Vide() && operateurs->getInfo() == "(") {
                 operateurs->DePilerStr(); 
@@ -236,7 +236,7 @@ string Transform(string expr[], int taille) {
         }
 
         else {  //si c'est un operande
-            sortie += expr[i];
+            sortie[j++] = expr[i];
         }
 
         /* //debug
@@ -248,7 +248,7 @@ string Transform(string expr[], int taille) {
     }
 
     while (!operateurs->Vide()) {    
-        sortie += operateurs->DePilerStr();
+        sortie[j++] = operateurs->DePilerStr();
     }
     
     return sortie;

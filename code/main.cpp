@@ -45,8 +45,11 @@ int main() {
  string expression[11] = {"a", "+", "(", "(", "b", "*", "4", ")", "/", "3", ")"};
  cout << Transform(expression, 11) << endl;
 
- */
- 
+
+string expression[11] = {"a", "+", "(", "(", "b", "*", "4", ")", "/", "3", ")"};
+cout << Transform(expression, 11) << endl;
+Arbre(Transform(expression, 11), 11);
+  */
 }
 
 
