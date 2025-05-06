@@ -54,15 +54,15 @@ void ListeNoeud::Afficher_listenoeud()
     
     while (tmp != nullptr)
     {
-        cout << tmp -> info << " ";
+        cout << tmp -> info->val << " ";
         tmp = tmp -> suiv;
     }
     cout << endl;
 }
 
 MaillonNoeud::~MaillonNoeud(){
-  if (suiv != nullptr)
-    delete suiv;
+  if (info)
+    delete info;
 }
 
 void ListeNoeud::InsererEnTete(Noeud * val) {
@@ -162,21 +162,21 @@ Noeud * PileNoeud::DePilerNoeud() {
         Noeud * val = L->tete->info;
         MaillonNoeud* tmp = L->tete;
         L->tete = L->tete->suiv;
-        delete tmp; // Libère uniquement le maillon
+        //delete tmp; // Libère uniquement le maillon
         return val;
     }
 }
 
-Noeud::Noeud(double v){
-    type = 'f'; //‘f’ pour valeur.
+Noeud::Noeud(char type,double v){
+    type = type; //‘f’ pour valeur.
     ope = 0;
     val = v;    // valeur si type == "f"
     fg = nullptr;
     fd = nullptr;
 }
 
-Noeud::Noeud(char op, Noeud *g, Noeud *d){
-    type = 'o';
+Noeud::Noeud(char type,char op, Noeud *g, Noeud *d){
+    type = type;
     ope = op;
     val = 0.0;
     fg = g;
@@ -196,28 +196,31 @@ Arbre::Arbre() {
     racine = nullptr;
 }
 
-Arbre::Arbre(string expr[], int taille){
-    PileNoeud * P = new PileNoeud();
+Arbre::Arbre(string expr[], int taille){    ///constructeur d'arbre.
+    PileNoeud P;
     for (int i = 0; i < taille; i++ ){
+        cout << i << endl;
+        cout << expr[i] <<endl;
         if (expr[i] == "+" || expr[i] == "-" || expr[i] == "*" || expr[i] == "/" ) {
-            if (!P->VideArbre()) {
-                Noeud* droite = P->DePilerNoeud();
-                Noeud* gauche = P->DePilerNoeud();
-                Noeud* opNode = new Noeud(expr[i][0], gauche, droite);
-                P->EmPilerNoeud(opNode);
+            if (!P.VideArbre()) {
+                Noeud* droite = P.DePilerNoeud();
+                if (!P.VideArbre()) {
+                    Noeud* gauche = P.DePilerNoeud();
+                    Noeud* operateur = new Noeud('o',expr[i][0], gauche, droite);
+                P.EmPilerNoeud(operateur);
+                }
             }
         }
         else { 
-            Noeud* n = new Noeud(stod(expr[i]));
-            P->EmPilerNoeud(n);
+            Noeud* n = new Noeud('f',stod(expr[i]));
+            P.EmPilerNoeud(n);
         }
     }
-    if (!P->VideArbre()) {
-        racine = P->DePilerNoeud();
-    }
+    if (!P.VideArbre()) {
+        racine = P.DePilerNoeud();} 
 }
 
-double Noeud::evaluer_noeud() {
+double Noeud::evaluer_noeud() {     //Transforme une expression infixée en une expression suffixée
 
     if (type == 'f') { //c'est une operande seule
         return val;
@@ -238,9 +241,12 @@ double Noeud::evaluer_noeud() {
             if (droite != 0) {
                 return gauche / droite;}
             else {
-                cerr<<"Impossible de diviser par 0";
-                exit(1);
+                cout<<"pas possible de diviser par 0"<<endl;
+                return 0;
             }
+        }
+        else {
+            return 0;   // si le type est 'o' mais operatuer diff de +-*/
         }
     }
     else {
@@ -248,12 +254,41 @@ double Noeud::evaluer_noeud() {
     }
 }
 
-
-
-
-
 Arbre::~Arbre() {
     if (this->racine != NULL) {
-        delete this->racine;
+        racine->~Noeud();
+        delete this-> racine;
     }
+    
+}
+
+string Noeud::Transformer(string expr){
+    if(fg){
+        if(fg->type == 'f'){
+            expr += to_string(fg->val);
+        }
+        else if(fg->type == 'v'){
+            expr += fg->val;
+        }
+        else{
+            expr += "(";
+            expr = fg->Transformer(expr);
+            expr += ")";
+        }
+    }
+    expr += ope;
+    if(fd){
+        if(fd->type == 'f'){
+            expr += to_string(fd->val);
+        }
+        else if(fd->type == 'v'){
+            expr += fd->val;
+        }
+        else{
+            expr += "(";
+            expr = fd->Transformer(expr);
+            expr += ")";
+        }
+    }
+    return expr;
 }

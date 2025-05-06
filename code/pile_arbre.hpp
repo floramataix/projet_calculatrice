@@ -61,18 +61,22 @@ class PileNoeud {
 class Noeud {
     private :
         friend class Arbre;
+        friend class ListeNoeud;
         char type ; //‘o’ pour opérateur et ‘f’ pour valeur.
         char ope ;// opérateur (+, -, *, /) si type == 'o'
         double val;    // valeur si type == 'f'
+        char var;
         Noeud * fg, * fd ;
     public : 
-        Noeud(double v);
-        Noeud(char op, Noeud* d, Noeud* g);
+        Noeud(char, double v);
+        Noeud(char, char op, Noeud* d, Noeud* g);
         double evaluer_noeud();
+        string Transformer(string);
+        Noeud * Derivee(char var);
         ~Noeud();
         friend class Arbre; 
 
-} ;
+};
 
 class Arbre {
     private : 
@@ -81,7 +85,10 @@ class Arbre {
     public :
         Arbre();
         Arbre(string expr[],int taille);
+
         ~Arbre();
 };
+
+
 
 #endif
