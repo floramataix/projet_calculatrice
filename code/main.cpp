@@ -48,8 +48,28 @@ int main() {
 
 string expression[11] = {"a", "+", "(", "(", "b", "*", "4", ")", "/", "3", ")"};
 cout << Transform(expression, 11) << endl;
-Arbre(Transform(expression, 11), 11);
-  */
+Arbre(Transform(expression, 11), 11);*/
+
+  Noeud* n1 = new Noeud(3.0); // Valeur 3
+  Noeud* n2 = new Noeud(4.0); // Valeur 4
+  Noeud* n3 = new Noeud('+', n1, n2); // n1 + n2
+
+  Noeud* n4 = new Noeud(2.0); // Valeur 2
+  Noeud* n5 = new Noeud('*', n3, n4); // (n1 + n2) * n4
+
+  // Evaluation de l'expression (n1 + n2) * n4
+
+  double resultat1 = n1->evaluer_noeud();
+  std::cout << "Le résultat de l'expression est: " << resultat1 << std::endl;
+
+  double resultat3 = n3->evaluer_noeud();
+  std::cout << "Le résultat de l'expression est: " << resultat3 << std::endl;
+
+  double resultat5 = n5->evaluer_noeud();
+  std::cout << "Le résultat de l'expression est: " << resultat5 << std::endl;
+
 }
+
+
 
 

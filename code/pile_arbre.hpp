@@ -68,6 +68,7 @@ class Noeud {
     public : 
         Noeud(double v);
         Noeud(char op, Noeud* d, Noeud* g);
+        double evaluer_noeud();
         ~Noeud();
         friend class Arbre; 
 

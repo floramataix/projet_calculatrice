@@ -168,20 +168,19 @@ Noeud * PileNoeud::DePilerNoeud() {
 }
 
 Noeud::Noeud(double v){
-    char type = 'f'; //‘f’ pour valeur.
-    char ope = 0;
-    double val = v;    // valeur si type == "f"
-    Noeud * fg = nullptr;
-    Noeud * fd = nullptr;
-
+    type = 'f'; //‘f’ pour valeur.
+    ope = 0;
+    val = v;    // valeur si type == "f"
+    fg = nullptr;
+    fd = nullptr;
 }
 
 Noeud::Noeud(char op, Noeud *g, Noeud *d){
-    char type = 'o';
-    char ope = op;
-    double val = 0.0;
-    Noeud * fg = g;
-    Noeud * fd = d;
+    type = 'o';
+    ope = op;
+    val = 0.0;
+    fg = g;
+    fd = d;
 }
 
 Noeud::~Noeud() {
@@ -217,6 +216,40 @@ Arbre::Arbre(string expr[], int taille){
         racine = P->DePilerNoeud();
     }
 }
+
+double Noeud::evaluer_noeud() {
+
+    if (type == 'f') { //c'est une operande seule
+        return val;
+    }
+
+    else if (type == 'o') {  // opérateur 
+        double gauche = fg->evaluer_noeud();
+        double droite = fd->evaluer_noeud();
+
+    // On applique l'opération selon le type d'opérateur
+        if (ope == '+') {
+            return gauche + droite;}
+        else if (ope == '-') {
+            return gauche - droite;}
+        else if (ope == '*') {
+            return gauche * droite;}
+        else if (ope == '/') {
+            if (droite != 0) {
+                return gauche / droite;}
+            else {
+                cerr<<"Impossible de diviser par 0";
+                exit(1);
+            }
+        }
+    }
+    else {
+        return 0;   // si le type est different de 'f' ou 'o' 
+    }
+}
+
+
+
 
 
 Arbre::~Arbre() {
