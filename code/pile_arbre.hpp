@@ -68,10 +68,16 @@ class Noeud {
         char var;
         Noeud * fg, * fd ;
     public : 
-        Noeud(char, double v);
+        Noeud();
+        Noeud(char, double val);
+        Noeud(char, char var);
         Noeud(char, char op, Noeud* d, Noeud* g);
+        char getType();
+        Noeud * getFg();
+        Noeud * getFd();
         double evaluer_noeud();
         string Transformer(string);
+        Noeud * copie();
         Noeud * Derivee(char var);
         ~Noeud();
         friend class Arbre; 
@@ -84,8 +90,10 @@ class Arbre {
         Noeud *racine;
     public :
         Arbre();
+        Arbre(Noeud *);
         Arbre(string expr[],int taille);
-
+        Noeud * getRacine();
+        
         ~Arbre();
 };
 

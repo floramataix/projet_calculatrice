@@ -132,8 +132,8 @@ bool PileNoeud::VideArbre() {
     }
 }
 
-PileNoeud::~PileNoeud()
-{
+PileNoeud::~PileNoeud(){
+
 }
 
 void PileNoeud::Afficher_noeud(){
@@ -167,22 +167,65 @@ Noeud * PileNoeud::DePilerNoeud() {
     }
 }
 
-Noeud::Noeud(char type,double v){
-    type = type; //‘f’ pour valeur.
-    ope = 0;
-    val = v;    // valeur si type == "f"
-    fg = nullptr;
-    fd = nullptr;
+Noeud::Noeud(){
+    this->type = ' '; // rien car vide .
+    this->ope = ' ';
+    this->val = 0.0;    
+    this->var = ' ';
+    this->fg = nullptr;
+    this->fd = nullptr;
+}
+
+Noeud::Noeud(char type,double val){
+    this->type = type; //‘f’ pour valeur.
+    this->ope = ' ';
+    this->val = val;    // valeur si type == "f"
+    this->var = ' ';
+    this->fg = nullptr;
+    this->fd = nullptr;
+}
+
+Noeud::Noeud(char type,char var){
+    this->type = type; //‘v’ pour valeur.
+    this->ope = ' ';
+    this->val = 0.0;    
+    this->var = var;    // valeur si type == "v"
+    this->fg = nullptr;
+    this->fd = nullptr;
 }
 
 Noeud::Noeud(char type,char op, Noeud *g, Noeud *d){
-    type = type;
-    ope = op;
-    val = 0.0;
-    fg = g;
-    fd = d;
+    this->type = type;  //‘o’ pour valeur.
+    this->ope = op;     // operateur si type == "o"
+    this->val = 0.0;
+    this->var = ' ';
+    this->fg = g;
+    this->fd = d;
 }
 
+char Noeud::getType(){   
+    if (this->type == ' ') {
+        cout << "ici ca va pas " <<endl;}
+    return this->type;
+}
+
+Noeud *Noeud::getFg() {
+    if (fg == nullptr) {
+        cout << "Erreur : pas de fils gauche." << endl;
+    } else {
+        cout << "Fils gauche trouvé, type : " << fg->getType() << endl;
+    }
+    return this->fg;
+}
+
+Noeud *Noeud::getFd(){
+    if (fd == nullptr) {
+        cout << "Erreur : pas de fils droit." << endl;
+    } else {
+        cout << "Fils droit trouvé, type : " << fd->getType() << endl;
+    }
+    return this->fd;
+}
 Noeud::~Noeud() {
     if (fg != nullptr) {
         delete fg;
@@ -194,6 +237,10 @@ Noeud::~Noeud() {
 
 Arbre::Arbre() {
     racine = nullptr;
+}
+
+Arbre::Arbre(Noeud * n){
+    racine = n;
 }
 
 Arbre::Arbre(string expr[], int taille){    ///constructeur d'arbre.
@@ -218,6 +265,13 @@ Arbre::Arbre(string expr[], int taille){    ///constructeur d'arbre.
     }
     if (!P.VideArbre()) {
         racine = P.DePilerNoeud();} 
+}
+
+Noeud *Arbre::getRacine(){
+    if (racine == nullptr) {
+        cout << " erreur il n'y a pas de racine." <<endl;
+    }
+    return this->racine;
 }
 
 double Noeud::evaluer_noeud() {     //Transforme une expression infixée en une expression suffixée
@@ -250,29 +304,27 @@ double Noeud::evaluer_noeud() {     //Transforme une expression infixée en une 
         }
     }
     else {
-        return 0;   // si le type est different de 'f' ou 'o' 
+        return 0;   // si le type est different de 'f' ou 'o' ou 'v'
     }
 }
 
 Arbre::~Arbre() {
     if (this->racine != NULL) {
-        racine->~Noeud();
         delete this-> racine;
     }
-    
 }
 
 string Noeud::Transformer(string expr){
-    if(fg){
-        if(fg->type == 'f'){
+    if(this->fg){
+        if(this->fg->type == 'f'){
             expr += to_string(fg->val);
         }
-        else if(fg->type == 'v'){
-            expr += fg->val;
+        else if(this->fg->type == 'v'){
+            expr += fg->var;
         }
         else{
             expr += "(";
-            expr = fg->Transformer(expr);
+            expr = this->fg->Transformer(expr);
             expr += ")";
         }
     }
@@ -282,7 +334,7 @@ string Noeud::Transformer(string expr){
             expr += to_string(fd->val);
         }
         else if(fd->type == 'v'){
-            expr += fd->val;
+            expr += fd->var;
         }
         else{
             expr += "(";
@@ -292,3 +344,100 @@ string Noeud::Transformer(string expr){
     }
     return expr;
 }
+
+Noeud * Noeud::copie() {
+    Noeud * copie_gauche = nullptr;
+    Noeud * copie_droite = nullptr;
+    if (fg != nullptr) {
+        copie_gauche = fg->copie();
+    }
+    if (fd != nullptr) {
+        copie_droite = fd->copie();
+    }
+    if (this->type == 'f') {
+        return new Noeud(type, val);
+    }
+    if (this->type == 'o') {
+        return new Noeud(type, ope, copie_gauche, copie_droite);
+    }
+    if (this->type == 'v') {
+        return new Noeud(type, var);
+    }
+    else {
+        cout<< "Un probleme ici (copie)" <<endl;
+        return new Noeud('f',0.0) ;
+    }
+    
+}
+
+Noeud* Noeud::Derivee(char variable){
+
+    if (this->type == 'f') {
+        return new Noeud('f',0.0);
+    }
+
+    else if (this->type == 'v') {
+        if (this->var == variable){
+            return new Noeud('f', 1.0);
+        } else {
+            return new Noeud('f', 0.0);  // variable différente, dérivée = 0
+        }
+    }    
+
+    else if (this->type == 'o'){
+        if (ope == '+'){
+            
+            Noeud * a = fg->Derivee(variable);
+            Noeud * b = fd->Derivee(variable);
+            return new Noeud ('o','+', a, b);
+        }
+        else if (ope == '-'){
+            
+            Noeud * a = fg->Derivee(variable);
+            Noeud * b = fd->Derivee(variable);
+            return new Noeud ('o','-', a, b);
+        }
+        else if (ope == '*'){    //u*v = u'v+uv'
+            
+            Noeud * u = fg->copie();
+            Noeud * v = fd->copie();
+            Noeud * uprime = fg->Derivee(variable);
+            Noeud * vprime = fd->Derivee(variable);
+
+            Noeud * gauche = new Noeud('o','*',uprime,v);
+            Noeud * droit = new Noeud('o','*',u,vprime);
+            return new Noeud('o','+',gauche,droit);
+        }
+        else if (ope == '/'){    //u*v = (u'v-uv')/v2
+            
+            Noeud * u = fg->Derivee(variable);
+            Noeud * v = fd->Derivee(variable);
+            Noeud * uprime = fg->copie();
+            Noeud * vprime = fd->copie();
+
+                Noeud * fois1 = new Noeud ('o', '*', uprime, v);
+                Noeud * fois2 = new Noeud ('o', '*', u, vprime);
+            Noeud * moins = new Noeud ('o','-',fois1,fois2);
+            Noeud * expo = new Noeud ('o', '^', v, new Noeud ('f', 2.0));
+            return new Noeud('o', '/', moins, expo);
+        }
+        else if (ope == '^'){    //(u^n)’= n*u’*u^(n-1)
+            
+            Noeud * uprime = this -> fg -> Derivee(variable);
+            Noeud * u = this -> fg -> copie();
+            Noeud * n = this -> fd -> copie();
+            Noeud *nmoinsun = new Noeud('f', n->val - 1); // Crée une nouvelle copie avec n - 1
+            return new Noeud('o', '*', new Noeud('o', '*', n, uprime), new Noeud('o', '^', u, nmoinsun));
+            return new Noeud('o', '*', new Noeud('o', '*', uprime, n), new Noeud('o', '^', u, nmoinsun));
+        }
+
+        else {
+            return new Noeud('f',0.0);
+        }
+    }
+    else {
+        cout<< "Un probleme est survenu" <<endl;
+        return new Noeud('f',0.0) ;
+    } 
+}
+
